@@ -1,0 +1,14 @@
+{
+  "name": "aas-action",
+  "private": true,
+  "version": "1.0.0",
+  "description": "GitHub Action bridge for Agentic Awesome Skills.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/run.test.mjs"
+  }
+}

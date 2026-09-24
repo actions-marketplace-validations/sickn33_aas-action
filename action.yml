@@ -1,0 +1,54 @@
+name: Agentic Awesome Skills
+description: Validate and preview reproducible AI agent skill stacks in GitHub Actions.
+author: sickn33
+branding:
+  icon: check-circle
+  color: green
+inputs:
+  version:
+    description: Exact agentic-awesome-skills npm version. Defaults to 18.3.0. A manifest catalog version must match this value.
+    required: false
+    default: "18.3.0"
+  manifest:
+    description: Repository-relative path to aas-stack.json. Mutually exclusive with skills.
+    required: false
+    default: ""
+  skills:
+    description: Comma-separated skill IDs. Mutually exclusive with manifest.
+    required: false
+    default: ""
+  target:
+    description: Installer target used when dry-run is false (cursor, claude, gemini, codex, kiro, antigravity, agy).
+    required: false
+    default: codex
+  dry-run:
+    description: Preview the installer plan without writing skills. Defaults to true.
+    required: false
+    default: "true"
+outputs:
+  version:
+    description: npm version executed by the action.
+    value: ${{ steps.aas.outputs.version }}
+  skill-count:
+    description: Number of skill IDs checked.
+    value: ${{ steps.aas.outputs.skill-count }}
+  manifest-digest:
+    description: Digest returned by aas stack validate when a manifest is supplied.
+    value: ${{ steps.aas.outputs.manifest-digest }}
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      with:
+        node-version: 22
+    - name: Validate AAS stack
+      id: aas
+      shell: bash
+      env:
+        AAS_VERSION: ${{ inputs.version }}
+        AAS_MANIFEST: ${{ inputs.manifest }}
+        AAS_SKILLS: ${{ inputs.skills }}
+        AAS_TARGET: ${{ inputs.target }}
+        AAS_DRY_RUN: ${{ inputs.dry-run }}
+      run: node "$GITHUB_ACTION_PATH/src/run.mjs"
